@@ -1,0 +1,30 @@
+version: '3.7'
+
+x-web-environment:
+  &web-environment
+  environment:
+    - PORT=80
+    - APP_ENV=development
+    - APP_CONFIG=config.development
+    - DATABASE_URL=postgres://postgres:@postgres:5432/postgres
+  build:
+    context: ./
+    dockerfile: Dockerfile
+  volumes:
+    - type: bind
+      source: ./
+      target: /app
+  depends_on:
+    - postgres
+
+services:
+  postgres:
+    image: postgres:alpine
+
+  api:
+    <<: *web-environment
+    restart: always
+    image: api
+    ports:
+      - "8000:80"
+    command: /start-reload.sh
