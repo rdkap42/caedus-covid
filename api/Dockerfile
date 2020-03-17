@@ -23,7 +23,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry export -f requirements.txt | /venv/bin/pip install -r /dev/stdin
 
 # Copy and build app
-COPY . /app
+COPY ./app /app
 RUN poetry build && /venv/bin/pip install dist/*.whl
 
 FROM base as final
