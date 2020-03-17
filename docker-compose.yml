@@ -17,6 +17,20 @@ x-api-environment:
   depends_on:
     - postgres
 
+x-frontend-environment:
+  &frontend-environment
+  environment:
+    - API_URL=http://0.0.0.0:8000/api/
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+  volumes:
+    - type: bind
+      source: ./frontend
+      target: /app
+  depends_on:
+    - postgres
+
 services:
   postgres:
     image: postgres:alpine
@@ -28,3 +42,11 @@ services:
     ports:
       - "8000:80"
     command: /start-reload.sh
+
+  frontend:
+    <<: *frontend-environment
+    restart: always
+    image: frontend
+    ports:
+      - "9000:3000"
+    command: yarn dev
