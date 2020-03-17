@@ -2,11 +2,6 @@
 This directory contains the API for Caedus Covid.
 
 ## Usage
-### Setup
-Install development dependencies:
-- [Docker](https://docs.docker.com/docker-for-mac/install/)
-- [Poetry](https://python-poetry.org/docs/#installation)
-
 ### Running the app
 To run the API on its own, run:
 ```
