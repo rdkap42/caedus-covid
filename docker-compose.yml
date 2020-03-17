@@ -1,18 +1,18 @@
 version: '3.7'
 
-x-web-environment:
-  &web-environment
+x-api-environment:
+  &api-environment
   environment:
     - PORT=80
     - APP_ENV=development
     - APP_CONFIG=config.development
     - DATABASE_URL=postgres://postgres:@postgres:5432/postgres
   build:
-    context: ./
+    context: ./api
     dockerfile: Dockerfile
   volumes:
     - type: bind
-      source: ./
+      source: ./api
       target: /app
   depends_on:
     - postgres
@@ -22,7 +22,7 @@ services:
     image: postgres:alpine
 
   api:
-    <<: *web-environment
+    <<: *api-environment
     restart: always
     image: api
     ports:

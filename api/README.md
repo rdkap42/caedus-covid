@@ -8,9 +8,9 @@ Install development dependencies:
 - [Poetry](https://python-poetry.org/docs/#installation)
 
 ### Running the app
-From within this directory, run:
+To run the API on its own, run:
 ```
-docker-compose build && docker-compose up
+docker-compose run api
 ```
 
 ### Managing dependencies
