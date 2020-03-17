@@ -4,13 +4,6 @@ COPY . /app
 
 WORKDIR /app
 
-RUN pip3 install pipenv
-RUN pipenv install
+RUN pip3 install -r requirements.txt
 
-ENV FLASK_APP=server.py
-
-COPY . .
-
-EXPOSE 8080
-
-CMD ["pipenv", "run", "flask", "run"]
+CMD ["python", "server.py"]
