@@ -20,7 +20,7 @@ docker-compose build
 ```
 
 ### API
-See [the api documentation](api/README.md).
+See [the api's documentation](api/README.md).
 
 ### Frontend
-To be done.
+See [the frontend's documentation](frontend/README.md).
