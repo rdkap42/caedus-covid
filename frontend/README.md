@@ -1,30 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app).
+# Caedus Covid Frontend
+This directory contains the Frontend for Caedus Covid.
 
-## Getting Started
 
-First, run the development server:
+## Usage
+### Requirements
+- Node.js 13.x
 
-```bash
-npm run dev
-# or
-yarn dev
+### Running the app
+To run the Frontend on its own, run:
+```
+docker-compose run frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Other commands
+#### Run the development server
+```bash
+docker-compose run --rm frontend yarn dev
+```
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+#### Build for production
+```bash
+docker-compose run --rm frontend yarn build
+```
 
-## Learn More
+#### Launch the production server
+```bash
+docker-compose run --rm frontend yarn start
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/zeit/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on ZEIT Now
-
-The easiest way to deploy your Next.js app is to use the [ZEIT Now Platform](https://zeit.co/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### Lint and fix errors
+```bash
+docker-compose run --rm frontend yarn lint --fix
+```

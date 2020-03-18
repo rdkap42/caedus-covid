@@ -20,14 +20,18 @@ x-api-environment:
 x-frontend-environment:
   &frontend-environment
   environment:
+    - HOST=0.0.0.0
+    - PORT=80
+    - NODE_ENV=development
+    - WEBSITE_ORIGIN=http://0.0.0.0:9000
     - API_URL=http://0.0.0.0:8000/api/
   build:
     context: ./frontend
     dockerfile: Dockerfile
   volumes:
     - type: bind
-      source: ./frontend
-      target: /app
+      source: ./frontend/src
+      target: /app/src
   depends_on:
     - postgres
 
@@ -48,5 +52,5 @@ services:
     restart: always
     image: frontend
     ports:
-      - "9000:3000"
+      - "9000:80"
     command: yarn dev

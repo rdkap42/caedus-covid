@@ -1,6 +1,7 @@
 # Caedus Covid API
 This directory contains the API for Caedus Covid.
 
+
 ## Usage
 ### Running the app
 To run the API on its own, run:
