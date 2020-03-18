@@ -6,6 +6,7 @@ Data Science Modeling for COVID-19 Pandemic
 Install development dependencies:
 - [Docker](https://docs.docker.com/docker-for-mac/install/)
 - [Poetry](https://python-poetry.org/docs/#installation)
+- [Yarn](https://classic.yarnpkg.com/docs/install)
 
 ### Running the project
 To run both the api and frontend, run the following command in your shell of choice:
