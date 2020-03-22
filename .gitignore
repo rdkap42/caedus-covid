@@ -1,3 +1,9 @@
 # dotenv environment variables file
 .env*
 !.env.example
+
+# byte-compiled files
+__pycache__/
+
+# Rope project settings
+.ropeproject
