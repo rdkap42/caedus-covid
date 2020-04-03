@@ -1,3 +1,6 @@
+#MacOS
+#.DS_Store
+
 # dotenv environment variables file
 .env*
 !.env.example
