@@ -37,6 +37,8 @@ coeff_personnel = default.getfloat('default_coeff_per sonnel')
 coeff_low_personnel = default.getfloat('default_coeff_low_personnel')
 coeff_up_personnel = default.getfloat('default_coeff_up_personnel')
 
+h1_viz_title = default.get('h1_viz_title')
+
 # Read the static data source 
 df_all = pd.read_csv(open(f'{data_file}'))
 today = np.datetime64(datetime.date.today())
@@ -381,7 +383,7 @@ figure5 = dict(data=data_personnel, layout =layout_personnel)
 
 # Dash app layout, no external CSS stylesheets used
 app.layout = html.Div([
-    html.H1('<State> COVID Disease Curve and Supply', id='pageTitle', style={'text-align':'center'}),
+    html.H1(h1_viz_title, id='pageTitle', style={'text-align':'center'}),
     
     html.Div([
       html.H4('Number of Cases: Statewide'),
