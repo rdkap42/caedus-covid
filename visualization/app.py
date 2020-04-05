@@ -33,7 +33,7 @@ coeff_vents = default.getfloat('default_coeff_vents')
 coeff_low_vents = default.getfloat('default_coeff_low_vents')
 coeff_up_vents = default.getfloat('default_coeff_up_vents')
 # Personnel
-coeff_personnel = default.getfloat('default_coeff_per sonnel')
+coeff_personnel = default.getfloat('default_coeff_personnel')
 coeff_low_personnel = default.getfloat('default_coeff_low_personnel')
 coeff_up_personnel = default.getfloat('default_coeff_up_personnel')
 
