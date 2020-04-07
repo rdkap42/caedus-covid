@@ -2,6 +2,7 @@ import dash
 from dash import Dash
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import datetime
 from smart_open import open
@@ -55,7 +56,8 @@ df.columns = ['date','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'death
 server = Flask(__name__)
 server.debug = True
 app = Dash(__name__, 
-    server=server, 
+    server=server,
+    external_stylesheets=[dbc.themes.LUX], 
     url_base_pathname='/')
 app.config['suppress_callback_exceptions']=True
 
@@ -71,7 +73,7 @@ lower_cases = go.Scatter(
     mode='lines',
     showlegend = False,
     line=dict(
-      color='rgb(179, 179, 179)',
+      color='#FDD663',
       width = 0
     )
 )
@@ -82,17 +84,17 @@ upper_cases = go.Scatter(
     mode='lines',
     name = "95% CI cases",
     line=dict(
-      color='rgb(179, 179, 179)',
+      color='#FDD663',
       width = 0
     )
 )
 mean_cases = go.Scatter(
     x=df.date,
     y=df.cases_mean,
-    mode='lines',
+    mode='lines+markers',
     name = "mean cases",
     line=dict(
-        color='rgb(0, 0, 0)',
+        color='#FBBC04',
     )
 )
 lower_deaths = go.Scatter(
@@ -102,7 +104,7 @@ lower_deaths = go.Scatter(
     mode='lines',
     showlegend = False,
     line=dict(
-      color='rgb(255, 153, 153)',
+      color='#F28B82',
       width = 0
     )
 )
@@ -113,70 +115,47 @@ upper_deaths = go.Scatter(
     mode='lines',
     name = "95% CI deaths",
     line=dict(
-      color='rgb(255, 153, 153)',
+      color='#F28B82',
       width = 0
     )
 )
 mean_deaths = go.Scatter(
     x=df.date,
     y=df.deaths_mean,
-    mode='lines',
+    mode='lines+markers',
     name = "mean deaths",
     line=dict(
-        color='rgb(255, 50, 50)',
+        color='#EA4335',
     )
 )
 
 layout_disease = go.Layout(
   xaxis = dict(
-    showline=False,
-    showgrid=False,
+    showline=True,
+    showgrid=True,
   ),
   yaxis = dict(
     title = 'Estimated Total Cases',
     showline=True,
-    showgrid=False,
+    showgrid=True,
   ),
   margin=go.layout.Margin(
-        l=50, #left margin
-        r=10, #right margin
-        b=20, #bottom margin
+        l=100, #left margin
+        r=50, #right margin
+        b=50, #bottom margin
         t=10, #top margin
     ),
   showlegend=True,
-  shapes = [
-        # Line Vertical
-        {
-            'type': 'line',
-            'x0': datetime.datetime.today(),
-            'y0': 0,
-            'x1': datetime.datetime.today(),
-            'y1': 4000000,
-            'line': {
-                'color': 'rgb(200, 50, 91)',
-                'width': 3,
-            },
-        }
-  ],
+  legend=dict(
+    orientation="h"
+  ),
   annotations=[
-    dict(
-          x = today - np.timedelta64(3, 'D'),
-          xref = "x",
-          yref="paper",
-          text = "Today",
-          showarrow = False,
-          yanchor="middle",
-          textangle=-90,
-          font=dict(
-            size=16
-          ),
-        ),
     dict(
       x = today,
       y = df[df.date == today]["cases_mean"].values[0],
       xref = "x",
       yref="y",
-      text = str(df[df.date == today]["cases_mean"].values[0]) + ' cases',
+      text = str(df[df.date == today]["cases_mean"].values[0]) + ' cases today',
       showarrow = True,
       arrowhead=7,
       ax = -30,
@@ -223,9 +202,9 @@ trace0 = go.Bar(
             arrayminus=[today_low, day5_low, day10_low, day30_low]
         ),
     marker=dict(
-        color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(222,45,38,0.8)']),
+        color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
 )
 
 data_beds = [trace0]
@@ -266,9 +245,9 @@ trace0 = go.Bar(
             arrayminus=[today_low, day5_low, day10_low, day30_low]
         ),
     marker=dict(
-        color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(222,45,38,0.8)']),
+        color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
 )
 
 data_icu = [trace0]
@@ -313,9 +292,9 @@ trace0 = go.Bar(
             arrayminus=[today_low, day5_low, day10_low, day30_low]
         ),
     marker=dict(
-        color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(222,45,38,0.8)']),
+        color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
 )
 
 data_vents = [trace0]
@@ -358,9 +337,9 @@ trace0 = go.Bar(
             arrayminus=[today_low, day5_low, day10_low, day30_low]
         ),
     marker=dict(
-        color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-               'rgba(222,45,38,0.8)']),
+        color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
 )
 
 data_personnel = [trace0]
@@ -381,35 +360,65 @@ figure3 = dict(data=data_icu, layout =layout_icu)
 figure4 = dict(data=data_vents, layout =layout_vents)
 figure5 = dict(data=data_personnel, layout =layout_personnel)
 
-# Dash app layout, no external CSS stylesheets used
+# Dash app layout
+
+# Configure navbar menu
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("About", href="#")),
+        dbc.NavItem(dbc.NavLink("Test", href="#")),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem("Choose your state", header=True),
+                dbc.DropdownMenuItem("Texas", href="#"),
+                dbc.DropdownMenuItem("Massachusetts", href="#"),
+                dbc.DropdownMenuItem("New York", href="#"),
+                dbc.DropdownMenuItem("New Jersey", href="#"),
+                dbc.DropdownMenuItem("...", href="#"),
+            ],
+            nav=True,
+            in_navbar=True,
+            label="States",
+        ),
+    ],
+    brand="Caedus Covid",
+    brand_href="#",
+    color="primary",
+    dark=True,
+    style={'text-align': 'left'}
+)
+
 app.layout = html.Div([
-    html.H1(h1_viz_title, id='pageTitle', style={'text-align':'center'}),
+    html.Div([navbar]),
+
+    html.H1(h1_viz_title, className="app-header", id='pageTitle', 
+    style={'text-align':'center','marginTop': '20px', 'marginBottom': '20px'}),
     
     html.Div([
-      html.H4('Number of Cases: Statewide'),
+      html.H4('Number of Cases: Statewide',style={'marginLeft': '20px'}),
       html.Div(id='line-chart1'),
       dcc.Graph(figure=figure1)
-      ]
+      ], style={'marginBottom': '50px'}
       ),
      html.Div([
-      html.H4('Expected Need: Hospital Beds'),
+      html.H4('Expected Need: Hospital Beds',style={'marginLeft': '20px'}),
       html.Div(id='bar-chart1'),
       dcc.Graph(figure=figure2)
       ], style={'width': '23%', 'display': 'inline-block'}
       ),
      html.Div([
-      html.H4('Expected Need: ICU Beds'),
+      html.H4('Expected Need: ICU Beds',style={'marginLeft': '20px'}),
       html.Div(id='bar-chart2'),
       dcc.Graph(figure=figure3)
       ], style={'width': '23%', 'display': 'inline-block'}),
      html.Div([
-      html.H4('Expected Need: Ventilators'),
+      html.H4('Expected Need: Ventilators',style={'marginLeft': '20px'}),
       html.Div(id='bar-chart3'),
       dcc.Graph(figure=figure4)
       ], style={'width': '23%', 'display': 'inline-block'}
       ),
      html.Div([
-      html.H4('Expected Need: Personnel'),
+      html.H4('Expected Need: Personnel',style={'marginLeft': '10px'}),
       html.Div(id='bar-chart4'),
       dcc.Graph(figure=figure5)
       ], style={'width': '23%', 'display': 'inline-block'}
