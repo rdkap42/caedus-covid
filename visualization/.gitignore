@@ -35,7 +35,7 @@ Temporary Items
 __pycache__/
 *.py[cod]
 *$py.class
-*.ini
+config.ini
 
 # C extensions
 *.so
