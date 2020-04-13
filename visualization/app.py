@@ -3,7 +3,7 @@ from dash import Dash
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import datetime
 from smart_open import open
 import numpy as np
@@ -14,7 +14,7 @@ from flask import Flask
 import plotly.graph_objs as go
 from plotly.offline import iplot
 
-""" Retrieve a configuration file for default model information """
+""" Retrieve a configuration file for default information """
 fileDir = os.getcwd()  
 config = configparser.ConfigParser()
 config.read(f'{fileDir}/config.ini')
@@ -40,17 +40,28 @@ coeff_up_personnel = default.getfloat('default_coeff_up_personnel')
 
 h1_viz_title = default.get('h1_viz_title')
 
-# Read the static data source 
-df_all = pd.read_csv(open(f'{data_file}'))
+# Date calculations for forecasting
 today = np.datetime64(datetime.date.today())
+days5 = today + np.timedelta64(5, 'D')
+days10 =  today + np.timedelta64(10, 'D')
+days30 =  today + np.timedelta64(30, 'D')
 
-df_all['Date']= pd.to_datetime(df_all['Date'])
-print(df_all)
-df =  df_all[(df_all['Date']) < (today + np.timedelta64(150, 'D'))]
-df = df[['Date','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'Deaths_LB', 
-'Deaths_UB', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']]
-df.columns = ['date','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
-'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
+def parse_data():
+    # Read the static data source 
+    df_all = pd.read_csv(open(f'{data_file}'))
+    today = np.datetime64(datetime.date.today())
+
+    df_all['Date']= pd.to_datetime(df_all['Date'])
+    print(df_all)
+    df =  df_all[(df_all['Date']) < (today + np.timedelta64(150, 'D'))]
+    df = df[['Date','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'Deaths_LB', 
+    'Deaths_UB', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']]
+    df.columns = ['date','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
+    'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
+
+    return df
+
+df = parse_data()
 
 # App flask config
 server = Flask(__name__)
@@ -166,12 +177,6 @@ layout_disease = go.Layout(
     )
   ]
 )
-
-# Date calculations for forecasting
-today = np.datetime64(datetime.date.today())
-days5 = today + np.timedelta64(5, 'D')
-days10 =  today + np.timedelta64(10, 'D')
-days30 =  today + np.timedelta64(30, 'D')
 
 # ***Hospital Bed Bar Chart***
 today_val = df[df.date == today]["cases_mean"].values[0] * coeff_bed
@@ -366,20 +371,7 @@ figure5 = dict(data=data_personnel, layout =layout_personnel)
 navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(dbc.NavLink("About", href="#")),
-        dbc.NavItem(dbc.NavLink("Test", href="#")),
-        dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem("Choose your state", header=True),
-                dbc.DropdownMenuItem("Texas", href="#"),
-                dbc.DropdownMenuItem("Massachusetts", href="#"),
-                dbc.DropdownMenuItem("New York", href="#"),
-                dbc.DropdownMenuItem("New Jersey", href="#"),
-                dbc.DropdownMenuItem("...", href="#"),
-            ],
-            nav=True,
-            in_navbar=True,
-            label="States",
-        ),
+        dbc.NavItem(dbc.NavLink("Test", href="#"))
     ],
     brand="Caedus Covid",
     brand_href="#",
@@ -387,9 +379,21 @@ navbar = dbc.NavbarSimple(
     dark=True,
     style={'text-align': 'left'}
 )
-
+    
 app.layout = html.Div([
     html.Div([navbar]),
+    html.Div([
+      dbc.DropdownMenu(
+            children=[
+                    dbc.DropdownMenuItem("Massachusetts", href="/massachusetts"),
+                    dbc.DropdownMenuItem("Texas", href="/texas")
+            ],
+            label="Please select your state",
+            color="primary", 
+            className="m-1",
+            bs_size="md",
+            style={'text-align':'center'}
+      ),
 
     html.H1(h1_viz_title, className="app-header", id='pageTitle', 
     style={'text-align':'center','marginTop': '20px', 'marginBottom': '20px'}),
@@ -423,7 +427,12 @@ app.layout = html.Div([
       dcc.Graph(figure=figure5)
       ], style={'width': '23%', 'display': 'inline-block'}
       ),
-  ])
+    ])
+])
+'''
+@app.callback(Output(component_id='line', component_property='figure'),
+    [ Input(component_id='dropdown-state', component_property='value')])
+'''
 
 if __name__ == '__main__':
     app.run_server( host='0.0.0.0', port=os.environ.get('PORT',8050) )
