@@ -44,22 +44,23 @@ days10 =  today + np.timedelta64(10, 'D')
 days30 =  today + np.timedelta64(30, 'D')
 
 # Read the static data source 
-df_all = pd.read_csv('gs://caeduscovid-mvp/mvp_data_03252020_1.csv')
+data_file = config['default']['default_datafile']
+df_all = pd.read_csv(f'{data_file}')
 
 df_all['Date']= pd.to_datetime(df_all['Date'])
+#df_all['State']=df_all['State'].astype('string')
 #df =  df_all[((df_all['Date']) < (today + np.timedelta64(150, 'D'))) & (df_all['State'] == 'MA')]
 df = df_all[(df_all['Date']) < (today + np.timedelta64(150, 'D'))]
 df = df[['Date', 'State','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'Deaths_LB', 
 'Deaths_UB', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']]
 df.columns = ['date','state','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
 'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
-print(df)
 
-def generate_dcurve(dataframe):
+def generate_dcurve(dff):
     # ***Disease Curve Line Chart***
     lower_cases = go.Scatter(
-        x=df.date,
-        y=df.cases_lb,
+        x=dff.date,
+        y=dff.cases_lb,
         fill= None,
         mode='lines',
         showlegend = False,
@@ -69,8 +70,8 @@ def generate_dcurve(dataframe):
         )
     )
     upper_cases = go.Scatter(
-        x=df.date,
-        y=df.cases_ub,
+        x=dff.date,
+        y=dff.cases_ub,
         fill='tonexty',
         mode='lines',
         name = "95% CI cases",
@@ -80,8 +81,8 @@ def generate_dcurve(dataframe):
         )
     )
     mean_cases = go.Scatter(
-        x=df.date,
-        y=df.cases_mean,
+        x=dff.date,
+        y=dff.cases_mean,
         mode='lines+markers',
         name = "mean cases",
         line=dict(
@@ -89,8 +90,8 @@ def generate_dcurve(dataframe):
         )
     )
     lower_deaths = go.Scatter(
-        x=df.date,
-        y=df.deaths_lb,
+        x=dff.date,
+        y=dff.deaths_lb,
         fill= None,
         mode='lines',
         showlegend = False,
@@ -100,8 +101,8 @@ def generate_dcurve(dataframe):
         )
     )
     upper_deaths = go.Scatter(
-        x=df.date,
-        y=df.deaths_ub,
+        x=dff.date,
+        y=dff.deaths_ub,
         fill='tonexty',
         mode='lines',
         name = "95% CI deaths",
@@ -111,8 +112,8 @@ def generate_dcurve(dataframe):
         )
     )
     mean_deaths = go.Scatter(
-        x=df.date,
-        y=df.deaths_mean,
+        x=dff.date,
+        y=dff.deaths_mean,
         mode='lines+markers',
         name = "mean deaths",
         line=dict(
@@ -136,16 +137,21 @@ def generate_dcurve(dataframe):
             t=10, #top margin
         ),
     showlegend=True,
+    transition={
+        'duration': 1500,
+        'easing': 'exp',
+        'ordering': 'layout first'
+    },
     legend=dict(
         orientation="h"
     ),
     annotations=[
         dict(
         x = today,
-        y = df[df.date == today]["cases_mean"].values[0],
+        y = dff[dff.date == today]["cases_mean"].values[0],
         xref = "x",
         yref="y",
-        text = str(df[df.date == today]["cases_mean"].values[0]) + ' cases today',
+        text = str(dff[dff.date == today]["cases_mean"].values[0]) + ' cases today',
         showarrow = True,
         arrowhead=7,
         ax = -30,
@@ -158,8 +164,10 @@ def generate_dcurve(dataframe):
     )
     data_disease = [lower_cases, upper_cases, mean_cases, lower_deaths, upper_deaths, mean_deaths]
     figure1 = dict(data=data_disease, layout =layout_disease)
-    return figure1
-
+    
+    return dcc.Graph(
+        id='graph',
+        figure=figure1)
 
 # App flask config
 server = Flask(__name__)
@@ -196,30 +204,77 @@ app.layout = html.Div([
       dcc.Dropdown(
         id='state-dropdown',
         options=[
-            {'label': 'Texas', 'value': 'TX'},
-            {'label': 'Massachusetts', 'value': 'MA'}
+            {'label': 'Alabama', 'value': '01'},
+            {'label': 'Arizona', 'value': '02'},
+            {'label': 'Arkansas', 'value': '03'},
+            {'label': 'California', 'value': '04'},
+            {'label': 'Colorado', 'value': '05'},
+            {'label': 'Connecticut', 'value': '06'},
+            {'label': 'Delaware', 'value': '07'},
+            {'label': 'Florida', 'value': '08'},
+            {'label': 'Georgia', 'value': '09'},
+            {'label': 'Idaho', 'value': '10'},
+            {'label': 'Illinios', 'value': '11'},
+            {'label': 'Indiana', 'value': '12'},
+            {'label': 'Iowa', 'value': '13'},
+            {'label': 'Kansas', 'value': '14'},
+            {'label': 'Kentucky', 'value': '15'},
+            {'label': 'Louisiana', 'value': '16'},
+            {'label': 'Maine', 'value': '17'},
+            {'label': 'Maryland', 'value': '18'},
+            {'label': 'Massachusetts', 'value': '19'},
+            {'label': 'Michigan', 'value': '20'},
+            {'label': 'Minnesota', 'value': '21'},
+            {'label': 'Mississippi', 'value': '22'},
+            {'label': 'Missouri', 'value': '23'},
+            {'label': 'Montana', 'value': '24'},
+            {'label': 'Nebraska', 'value': '25'},
+            {'label': 'Nevada', 'value': '26'},
+            {'label': 'New Hampshire', 'value': '27'},
+            {'label': 'New Jersey', 'value': '28'},
+            {'label': 'New Mexico', 'value': '29'},
+            {'label': 'New York', 'value': '30'},
+            {'label': 'North Carolina', 'value': '31'},
+            {'label': 'North Dakota', 'value': '32'},
+            {'label': 'Ohio', 'value': '33'},
+            {'label': 'Oklahoma', 'value': '34'},
+            {'label': 'Oregon', 'value': '35'},
+            {'label': 'Pennsylvania', 'value': '36'},
+            {'label': 'Rhode Island', 'value': '37'},
+            {'label': 'South Carolina', 'value': '38'},
+            {'label': 'South Dakota', 'value': '29'},
+            {'label': 'Tennessee', 'value': '40'},
+            {'label': 'Texas', 'value': '41'},
+            {'label': 'Utah', 'value': '42'},
+            {'label': 'Vermont', 'value': '43'},
+            {'label': 'Virginia', 'value': '44'},
+            {'label': 'Washington', 'value': '45'},
+            {'label': 'West Virginia', 'value': '46'},
+            {'label': 'Wisconsin', 'value': '47'},
+            {'label': 'Wyoming', 'value': '48'}
     ],
-     placeholder="Select a state",
-     value=['TX'], # default value
+    style={'marginBottom': '30px', 'marginTop': '10px', 
+    'text-align': 'center',
+    'text-transform': 'uppercase',
+    'font-size':'100%',
+    'height': '30px'},
+    placeholder="Select a state",
+    value=['19'], # default value
     )]),
-    html.Div(id='line-chart1', children=[
-        dcc.Graph(figure=generate_dcurve(df))
+    html.H4('Number of Cases: Statewide',style={'marginLeft': '20px'}),
+    html.Div(id='line-chart1', children=[])
     ])
-    ])
-
 @app.callback(
-    dash.dependencies.Output('line-chart1', 'figure'),
+    dash.dependencies.Output('line-chart1', 'children'),
     [dash.dependencies.Input('state-dropdown', 'value')])
 def display_dcurve(value):
       
-    if value is None:
-        return generate_dcurve(df)
-    #dff = df.query('state' == value)
-    #dff = (df[df['state'] == value])
-    # works dff = df[df['state'].str.contains(value)]
-    dff = df[df.state.str.contains(value,case=True)]
+    #if value is None:
+    #    return generate_dcurve(df)
+        
+    dff = df[df.state.isin([value])]
     print(dff)
     return generate_dcurve(dff)
 
 if __name__ == '__main__':
-    app.run_server( host='0.0.0.0', port=os.environ.get('PORT',8050), debug=True)
+    app.run_server( host='0.0.0.0', port=os.environ.get('PORT',8050), dev_tools_hot_reload=False)
