@@ -56,6 +56,11 @@ df = df[['Date', 'State','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'D
 df.columns = ['date','state','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
 'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
 
+# function to generate the no data alert message
+def noData():
+    return dbc.Alert("We do not have data yet for this state. Please select another state!", color="warning")
+
+# function to generate the disease curve graph
 def generate_dcurve(dff):
     # ***Disease Curve Line Chart***
     lower_cases = go.Scatter(
@@ -273,12 +278,13 @@ app.layout = html.Div([
 @app.callback(
     dash.dependencies.Output('line-chart1', 'children'),
     [dash.dependencies.Input('state-dropdown', 'value')])
-def display_dcurve(value):
-    if value == "":
-        return html.Div()
-        
+def display_dcurve(value): 
     dff = df[df.state.isin([value])]
-    return generate_dcurve(dff)
+
+    if dff.empty == True:
+        return noData()
+    else:
+        return generate_dcurve(dff)
 
 if __name__ == '__main__':
     app.run_server( host='0.0.0.0', port=os.environ.get('PORT',8050), dev_tools_hot_reload=False)
