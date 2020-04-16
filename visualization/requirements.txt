@@ -8,6 +8,7 @@ chardet==3.0.4
 click==7.1.1
 cryptography==2.8
 dash==1.9.1
+dash_bootstrap_components
 dash-core-components==1.8.1
 dash-html-components==1.0.2
 dash-renderer==1.2.4
