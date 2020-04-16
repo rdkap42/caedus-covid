@@ -137,6 +137,12 @@ def generate_dcurve(dff):
             t=10, #top margin
         ),
     showlegend=True,
+    title={
+        'text': "Number of Cases: Statewide",
+        'y': 1.0,
+        'x': 0.05,
+        'xanchor': 'left',
+        'yanchor': 'top'},
     transition={
         'duration': 1500,
         'easing': 'exp',
@@ -259,21 +265,19 @@ app.layout = html.Div([
     'font-size':'100%',
     'height': '30px'},
     placeholder="Select a state",
-    value=['19'], # default value
+    value=[""], # default value
     )]),
-    html.H4('Number of Cases: Statewide',style={'marginLeft': '20px'}),
+    
     html.Div(id='line-chart1', children=[])
     ])
 @app.callback(
     dash.dependencies.Output('line-chart1', 'children'),
     [dash.dependencies.Input('state-dropdown', 'value')])
 def display_dcurve(value):
-      
-    #if value is None:
-    #    return generate_dcurve(df)
+    if value == "":
+        return html.Div()
         
     dff = df[df.state.isin([value])]
-    print(dff)
     return generate_dcurve(dff)
 
 if __name__ == '__main__':
