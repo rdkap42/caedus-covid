@@ -22,5 +22,5 @@ network:
 
 handlers:
 - url: /.*
-  script: auto
+  script: app-single:server
   secure: always
