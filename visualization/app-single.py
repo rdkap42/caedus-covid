@@ -60,7 +60,7 @@ df.columns = ['date','state','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean'
 def noData():
     return dbc.Alert("We do not have data yet for this state. Please select another state!", color="warning")
 
-# function to generate the disease curve graph
+# function to generates graphs
 def generate_viz(dff):
     # ***Disease Curve Line Chart***
     lower_cases = go.Scatter(
@@ -142,12 +142,6 @@ def generate_viz(dff):
             t=10, #top margin
         ),
     showlegend=True,
-    title={
-        'text': "Number of Cases: Statewide",
-        'y': 1.0,
-        'x': 0.05,
-        'xanchor': 'left',
-        'yanchor': 'top'},
     transition={
         'duration': 1500,
         'easing': 'exp',
@@ -175,22 +169,22 @@ def generate_viz(dff):
     )
 
     # ***Hospital Bed Bar Chart***
-    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_bed
-    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_bed
-    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_bed
-    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_bed
-    capacity = df[df.date == today]["total_beds"].values[0]
+    today_val = dff[dff.date == today]["cases_mean"].values[0] * coeff_bed
+    day5_val = dff[dff.date == days5]["cases_mean"].values[0] * coeff_bed
+    day10_val= dff[dff.date == days10]["cases_mean"].values[0] * coeff_bed
+    day30_val = dff[dff.date == days30]["cases_mean"].values[0] * coeff_bed
+    capacity = dff[dff.date == today]["total_beds"].values[0]
 
     # For Error Bars
-    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_bed) - today_val
-    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_bed) - day5_val
-    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_bed) - day10_val
-    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_bed) - day30_val
+    today_up = (dff[dff.date == today]["cases_ub"].values[0] * coeff_up_bed) - today_val
+    day5_up = (dff[dff.date == days5]["cases_ub"].values[0] * coeff_up_bed) - day5_val
+    day10_up= (dff[dff.date == days10]["cases_ub"].values[0] * coeff_up_bed) - day10_val
+    day30_up = (dff[dff.date == days30]["cases_ub"].values[0] * coeff_up_bed) - day30_val
 
-    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_bed)
-    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_bed)
-    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_bed)
-    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_bed)
+    today_low =  today_val - (dff[dff.date == today]["cases_lb"].values[0] * coeff_low_bed)
+    day5_low = day5_val - (dff[dff.date == days5]["cases_lb"].values[0] * coeff_low_bed)
+    day10_low = day10_val - (dff[dff.date == days10]["cases_lb"].values[0] * coeff_low_bed)
+    day30_low =  day30_val - (dff[dff.date == days30]["cases_lb"].values[0] * coeff_low_bed)
 
     trace0 = go.Bar(
         x=['Today', 'in 5 Days', 'in 10 Days',
@@ -203,9 +197,9 @@ def generate_viz(dff):
                 arrayminus=[today_low, day5_low, day10_low, day30_low]
             ),
         marker=dict(
-            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(222,45,38,0.8)']),
+            color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
     )
 
     data_beds = [trace0]
@@ -218,22 +212,22 @@ def generate_viz(dff):
             ))
 
     # ***ICU Bed Bar Chart***
-    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_icu
-    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_icu
-    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_icu
-    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_icu
-    capacity = df[df.date == today]["total_ICU_beds"].values[0]
+    today_val = dff[dff.date == today]["cases_mean"].values[0] * coeff_icu
+    day5_val = dff[dff.date == days5]["cases_mean"].values[0] * coeff_icu
+    day10_val= dff[dff.date == days10]["cases_mean"].values[0] * coeff_icu
+    day30_val = dff[dff.date == days30]["cases_mean"].values[0] * coeff_icu
+    capacity = dff[dff.date == today]["total_ICU_beds"].values[0]
 
     #For Error Bars
-    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_icu) - today_val
-    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_icu) - day5_val
-    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_icu) - day10_val
-    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_icu) - day30_val
+    today_up = (dff[dff.date == today]["cases_ub"].values[0] * coeff_up_icu) - today_val
+    day5_up = (dff[dff.date == days5]["cases_ub"].values[0] * coeff_up_icu) - day5_val
+    day10_up= (dff[dff.date == days10]["cases_ub"].values[0] * coeff_up_icu) - day10_val
+    day30_up = (dff[dff.date == days30]["cases_ub"].values[0] * coeff_up_icu) - day30_val
 
-    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_icu)
-    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_icu)
-    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_icu)
-    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_icu)
+    today_low =  today_val - (dff[dff.date == today]["cases_lb"].values[0] * coeff_low_icu)
+    day5_low = day5_val - (dff[dff.date == days5]["cases_lb"].values[0] * coeff_low_icu)
+    day10_low = day10_val - (dff[dff.date == days10]["cases_lb"].values[0] * coeff_low_icu)
+    day30_low =  day30_val - (dff[dff.date == days30]["cases_lb"].values[0] * coeff_low_icu)
 
     trace0 = go.Bar(
         x=['Today', 'in 5 Days', 'in 10 Days',
@@ -246,9 +240,9 @@ def generate_viz(dff):
                 arrayminus=[today_low, day5_low, day10_low, day30_low]
             ),
         marker=dict(
-            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(222,45,38,0.8)']),
+            color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
     )
 
     data_icu = [trace0]
@@ -262,23 +256,23 @@ def generate_viz(dff):
     )
 
     # ***Vents Bar Chart***
-    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_vents
-    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_vents
-    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_vents
-    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_vents
-    capacity = df[df.date == today]["total_vents"].values[0]
+    today_val = dff[dff.date == today]["cases_mean"].values[0] * coeff_vents
+    day5_val = dff[dff.date == days5]["cases_mean"].values[0] * coeff_vents
+    day10_val= dff[dff.date == days10]["cases_mean"].values[0] * coeff_vents
+    day30_val = dff[dff.date == days30]["cases_mean"].values[0] * coeff_vents
+    capacity = dff[dff.date == today]["total_vents"].values[0]
 
     #For Error Bars
-    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_vents) - today_val
-    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_vents) - day5_val
-    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_vents) - day10_val
-    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_vents) - day30_val
+    today_up = (dff[dff.date == today]["cases_ub"].values[0] * coeff_up_vents) - today_val
+    day5_up = (dff[dff.date == days5]["cases_ub"].values[0] * coeff_up_vents) - day5_val
+    day10_up= (dff[dff.date == days10]["cases_ub"].values[0] * coeff_up_vents) - day10_val
+    day30_up = (dff[dff.date == days30]["cases_ub"].values[0] * coeff_up_vents) - day30_val
 
 
-    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_vents)
-    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_vents)
-    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_vents)
-    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_vents)
+    today_low =  today_val - (dff[dff.date == today]["cases_lb"].values[0] * coeff_low_vents)
+    day5_low = day5_val - (dff[dff.date == days5]["cases_lb"].values[0] * coeff_low_vents)
+    day10_low = day10_val - (dff[dff.date == days10]["cases_lb"].values[0] * coeff_low_vents)
+    day30_low =  day30_val - (dff[dff.date == days30]["cases_lb"].values[0] * coeff_low_vents)
 
 
 
@@ -293,9 +287,9 @@ def generate_viz(dff):
                 arrayminus=[today_low, day5_low, day10_low, day30_low]
             ),
         marker=dict(
-            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(222,45,38,0.8)']),
+            color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
     )
 
     data_vents = [trace0]
@@ -309,23 +303,23 @@ def generate_viz(dff):
     )
 
     # ***Personnel Bar Chart***
-    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_personnel
-    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_personnel
-    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_personnel
-    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_personnel
-    capacity = df[df.date == today]["phys_supply"].values[0]
+    today_val = dff[dff.date == today]["cases_mean"].values[0] * coeff_personnel
+    day5_val = dff[dff.date == days5]["cases_mean"].values[0] * coeff_personnel
+    day10_val= dff[dff.date == days10]["cases_mean"].values[0] * coeff_personnel
+    day30_val = dff[dff.date == days30]["cases_mean"].values[0] * coeff_personnel
+    capacity = dff[dff.date == today]["phys_supply"].values[0]
 
     #For Error Bars
-    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_personnel) - today_val
-    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_personnel) - day5_val
-    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_personnel) - day10_val
-    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_personnel) - day30_val
+    today_up = (dff[dff.date == today]["cases_ub"].values[0] * coeff_up_personnel) - today_val
+    day5_up = (dff[dff.date == days5]["cases_ub"].values[0] * coeff_up_personnel) - day5_val
+    day10_up= (dff[dff.date == days10]["cases_ub"].values[0] * coeff_up_personnel) - day10_val
+    day30_up = (dff[dff.date == days30]["cases_ub"].values[0] * coeff_up_personnel) - day30_val
 
 
-    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_personnel)
-    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_personnel)
-    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_personnel)
-    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_personnel)
+    today_low =  today_val - (dff[dff.date == today]["cases_lb"].values[0] * coeff_low_personnel)
+    day5_low = day5_val - (dff[dff.date == days5]["cases_lb"].values[0] * coeff_low_personnel)
+    day10_low = day10_val - (dff[dff.date == days10]["cases_lb"].values[0] * coeff_low_personnel)
+    day30_low =  day30_val - (dff[dff.date == days30]["cases_lb"].values[0] * coeff_low_personnel)
 
     trace0 = go.Bar(
         x=['Today', 'in 5 Days', 'in 10 Days',
@@ -338,9 +332,9 @@ def generate_viz(dff):
                 arrayminus=[today_low, day5_low, day10_low, day30_low]
             ),
         marker=dict(
-            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
-                   'rgba(222,45,38,0.8)']),
+            color=['#34A853', '#34A853',
+               '#34A853', '#34A853',
+               '#4285F4']),
     )
 
     data_personnel = [trace0]
