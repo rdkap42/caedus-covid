@@ -61,7 +61,7 @@ def noData():
     return dbc.Alert("We do not have data yet for this state. Please select another state!", color="warning")
 
 # function to generate the disease curve graph
-def generate_dcurve(dff):
+def generate_viz(dff):
     # ***Disease Curve Line Chart***
     lower_cases = go.Scatter(
         x=dff.date,
@@ -173,12 +173,228 @@ def generate_dcurve(dff):
         )
     ]
     )
+
+    # ***Hospital Bed Bar Chart***
+    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_bed
+    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_bed
+    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_bed
+    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_bed
+    capacity = df[df.date == today]["total_beds"].values[0]
+
+    # For Error Bars
+    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_bed) - today_val
+    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_bed) - day5_val
+    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_bed) - day10_val
+    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_bed) - day30_val
+
+    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_bed)
+    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_bed)
+    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_bed)
+    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_bed)
+
+    trace0 = go.Bar(
+        x=['Today', 'in 5 Days', 'in 10 Days',
+           'in 30 Days', 'Capacity'],
+        y= [today_val, day5_val, day10_val, day30_val, capacity],
+        error_y=dict(
+                type='data',
+                symmetric=False,
+                array=[today_up, day5_up, day10_up, day30_up],
+                arrayminus=[today_low, day5_low, day10_low, day30_low]
+            ),
+        marker=dict(
+            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(222,45,38,0.8)']),
+    )
+
+    data_beds = [trace0]
+    layout_beds = go.Layout(
+        margin=go.layout.Margin(
+            l=50, #left margin
+            r=10, #right margin
+            b=50, #bottom margin
+            t=10, #top margin
+            ))
+
+    # ***ICU Bed Bar Chart***
+    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_icu
+    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_icu
+    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_icu
+    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_icu
+    capacity = df[df.date == today]["total_ICU_beds"].values[0]
+
+    #For Error Bars
+    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_icu) - today_val
+    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_icu) - day5_val
+    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_icu) - day10_val
+    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_icu) - day30_val
+
+    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_icu)
+    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_icu)
+    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_icu)
+    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_icu)
+
+    trace0 = go.Bar(
+        x=['Today', 'in 5 Days', 'in 10 Days',
+           'in 30 Days', 'Capacity'],
+        y= [today_val, day5_val, day10_val, day30_val, capacity],
+        error_y=dict(
+                type='data',
+                symmetric=False,
+                array=[today_up, day5_up, day10_up, day30_up],
+                arrayminus=[today_low, day5_low, day10_low, day30_low]
+            ),
+        marker=dict(
+            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(222,45,38,0.8)']),
+    )
+
+    data_icu = [trace0]
+    layout_icu = go.Layout(
+        margin=go.layout.Margin(
+            l=50, #left margin
+            r=10, #right margin
+            b=50, #bottom margin
+            t=10, #top margin
+        )
+    )
+
+    # ***Vents Bar Chart***
+    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_vents
+    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_vents
+    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_vents
+    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_vents
+    capacity = df[df.date == today]["total_vents"].values[0]
+
+    #For Error Bars
+    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_vents) - today_val
+    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_vents) - day5_val
+    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_vents) - day10_val
+    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_vents) - day30_val
+
+
+    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_vents)
+    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_vents)
+    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_vents)
+    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_vents)
+
+
+
+    trace0 = go.Bar(
+        x=['Today', 'in 5 Days', 'in 10 Days',
+           'in 30 Days', 'Capacity'],
+        y= [today_val, day5_val, day10_val, day30_val, capacity],
+        error_y=dict(
+                type='data',
+                symmetric=False,
+                array=[today_up, day5_up, day10_up, day30_up],
+                arrayminus=[today_low, day5_low, day10_low, day30_low]
+            ),
+        marker=dict(
+            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(222,45,38,0.8)']),
+    )
+
+    data_vents = [trace0]
+    layout_vents = go.Layout(
+        margin=go.layout.Margin(
+            l=50, #left margin
+            r=10, #right margin
+            b=50, #bottom margin
+            t=10, #top margin
+        )
+    )
+
+    # ***Personnel Bar Chart***
+    today_val = df[df.date == today]["cases_mean"].values[0] * coeff_personnel
+    day5_val = df[df.date == days5]["cases_mean"].values[0] * coeff_personnel
+    day10_val= df[df.date == days10]["cases_mean"].values[0] * coeff_personnel
+    day30_val = df[df.date == days30]["cases_mean"].values[0] * coeff_personnel
+    capacity = df[df.date == today]["phys_supply"].values[0]
+
+    #For Error Bars
+    today_up = (df[df.date == today]["cases_ub"].values[0] * coeff_up_personnel) - today_val
+    day5_up = (df[df.date == days5]["cases_ub"].values[0] * coeff_up_personnel) - day5_val
+    day10_up= (df[df.date == days10]["cases_ub"].values[0] * coeff_up_personnel) - day10_val
+    day30_up = (df[df.date == days30]["cases_ub"].values[0] * coeff_up_personnel) - day30_val
+
+
+    today_low =  today_val - (df[df.date == today]["cases_lb"].values[0] * coeff_low_personnel)
+    day5_low = day5_val - (df[df.date == days5]["cases_lb"].values[0] * coeff_low_personnel)
+    day10_low = day10_val - (df[df.date == days10]["cases_lb"].values[0] * coeff_low_personnel)
+    day30_low =  day30_val - (df[df.date == days30]["cases_lb"].values[0] * coeff_low_personnel)
+
+    trace0 = go.Bar(
+        x=['Today', 'in 5 Days', 'in 10 Days',
+           'in 30 Days', '# Personnel'],
+        y= [today_val, day5_val, day10_val, day30_val, capacity],
+        error_y=dict(
+                type='data',
+                symmetric=False,
+                array=[today_up, day5_up, day10_up, day30_up],
+                arrayminus=[today_low, day5_low, day10_low, day30_low]
+            ),
+        marker=dict(
+            color=['rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(204,204,204,1)', 'rgba(204,204,204,1)',
+                   'rgba(222,45,38,0.8)']),
+    )
+
+    data_personnel = [trace0]
+    layout_personnel = go.Layout(
+        margin=go.layout.Margin(
+            l=50, #left margin
+            r=10, #right margin
+            b=50, #bottom margin
+            t=10, #top margin
+        )
+    )
+
     data_disease = [lower_cases, upper_cases, mean_cases, lower_deaths, upper_deaths, mean_deaths]
     figure1 = dict(data=data_disease, layout =layout_disease)
+    figure2 = dict(data=data_beds, layout =layout_beds)
+    figure3 = dict(data=data_icu, layout =layout_icu)
+    figure4 = dict(data=data_vents, layout =layout_vents)
+    figure5 = dict(data=data_personnel, layout =layout_personnel)
     
-    return dcc.Graph(
-        id='graph',
-        figure=figure1)
+    
+    
+    return html.Div([html.Div([
+      html.H4('Number of Cases: Statewide'),
+      html.Div(id='line-chart1'),
+      dcc.Graph(figure=figure1)
+      ]
+      ),
+     html.Div([
+      html.H4('Expected Need: Hospital Beds'),
+      html.Div(id='bar-chart1'),
+      dcc.Graph(figure=figure2)
+      ], style={'width': '23%', 'display': 'inline-block'}
+      ),
+     html.Div([
+      html.H4('Expected Need: ICU Beds'),
+      html.Div(id='bar-chart2'),
+      dcc.Graph(figure=figure3)
+      ], style={'width': '23%', 'display': 'inline-block'}),
+     html.Div([
+      html.H4('Expected Need: Ventilators'),
+      html.Div(id='bar-chart3'),
+      dcc.Graph(figure=figure4)
+      ], style={'width': '23%', 'display': 'inline-block'}
+      ),
+     html.Div([
+      html.H4('Expected Need: Personnel'),
+      html.Div(id='bar-chart4'),
+      dcc.Graph(figure=figure5)
+      ], style={'width': '23%', 'display': 'inline-block'}
+      ),
+  ])
+
+
+
 
 # App flask config
 server = Flask(__name__)
@@ -273,10 +489,10 @@ app.layout = html.Div([
     value=[""], # default value
     )]),
     
-    html.Div(id='line-chart1', children=[])
+    html.Div(id='viz-div', children=[])
     ])
 @app.callback(
-    dash.dependencies.Output('line-chart1', 'children'),
+    dash.dependencies.Output('viz-div', 'children'),
     [dash.dependencies.Input('state-dropdown', 'value')])
 def display_dcurve(value): 
     dff = df[df.state.isin([value])]
@@ -284,7 +500,7 @@ def display_dcurve(value):
     if dff.empty == True:
         return noData()
     else:
-        return generate_dcurve(dff)
+        return generate_viz(dff)
 
 if __name__ == '__main__':
     app.run_server( host='0.0.0.0', port=os.environ.get('PORT',8050), dev_tools_hot_reload=False)
