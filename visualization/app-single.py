@@ -427,7 +427,7 @@ app.layout = html.Div([
             {'label': 'District of Columbia', 'value': '09'},
             {'label': 'Florida', 'value': '10'},
             {'label': 'Georgia', 'value': '11'},
-            {'label': 'Hawaii0', 'value': '12'},
+            {'label': 'Hawaii', 'value': '12'},
             {'label': 'Idaho', 'value': '13'},
             {'label': 'Illinios', 'value': '14'},
             {'label': 'Indiana', 'value': '15'},
