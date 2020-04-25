@@ -11,10 +11,10 @@ import pandas as pd
 import os
 import configparser 
 from flask import Flask
+from flask import render_template
 import plotly.graph_objs as go
 from plotly.offline import iplot
 import gcsfs
-from navbar import Navbar
 
 """ Retrieve a configuration file for default information """
 fileDir = os.getcwd()  
@@ -355,8 +355,6 @@ def generate_viz(dff):
     figure4 = dict(data=data_vents, layout =layout_vents)
     figure5 = dict(data=data_personnel, layout =layout_personnel)
     
-    
-    
     return html.Div([html.Div([
       html.H4('Number of Cases: Statewide'),
       html.Div(id='line-chart1'),
@@ -388,30 +386,18 @@ def generate_viz(dff):
       ),
   ])
 
-
-
-
 # App flask config
 server = Flask(__name__)
 server.debug = True
+
 app = Dash(__name__, 
     server=server,
     external_stylesheets=[dbc.themes.LUX], 
     url_base_pathname='/')
 app.config['suppress_callback_exceptions']=True
 
-@server.route("/")
-def MyDashApp():
-    return app.index()
-
 # Dash app layout
-h1_viz_title = default.get('h1_viz_title')
-
-# Configure navbar menu
-navbar = Navbar()
-
 app.layout = html.Div([
-    html.Div([navbar]),
     html.Div([
       dcc.Dropdown(
         id='state-dropdown',
@@ -477,7 +463,7 @@ app.layout = html.Div([
     value=[""], # default value
     )]),
     
-    html.Div(id='viz-div', children=[])
+    html.Div(id='viz-div', children=[]),
     ])
 @app.callback(
     dash.dependencies.Output('viz-div', 'children'),
