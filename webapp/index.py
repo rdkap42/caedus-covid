@@ -22,5 +22,9 @@ def data():
 def products():
     return render_template('products.html')
 
+@server.route("/contact")
+def contact():
+    return render_template('contact.html')
+
 if __name__ == '__main__':
     server.run( host='0.0.0.0', port=os.environ.get('PORT',8050))
