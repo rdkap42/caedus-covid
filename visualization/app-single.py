@@ -46,6 +46,7 @@ days30 =  today + np.timedelta64(30, 'D')
 
 # Read the static data source 
 data_file = config['default']['default_datafile']
+print(data_file)
 df_all = pd.read_csv(f'{data_file}')
 
 df_all['Date']= pd.to_datetime(df_all['Date'])
@@ -57,6 +58,7 @@ df = df[['Date', 'State','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'D
 df.columns = ['date','state','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
 'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
 
+print(df)
 # function to generate the no data alert message
 def noData():
     return dbc.Alert("We do not have data yet for this state. Please select another state!", color="warning")
@@ -402,15 +404,15 @@ app.layout = html.Div([
       dcc.Dropdown(
         id='state-dropdown',
         options=[
-            {'label': 'Alabama', 'value': '01'},
-            {'label': 'Alaska', 'value': '02'},
-            {'label': 'Arizona', 'value': '03'},
-            {'label': 'Arkansas', 'value': '04'},
-            {'label': 'California', 'value': '05'},
-            {'label': 'Colorado', 'value': '06'},
-            {'label': 'Connecticut', 'value': '07'},
-            {'label': 'Delaware', 'value': '08'},
-            {'label': 'District of Columbia', 'value': '09'},
+            {'label': 'Alabama', 'value': '1'},
+            {'label': 'Alaska', 'value': '2'},
+            {'label': 'Arizona', 'value': '3'},
+            {'label': 'Arkansas', 'value': '4'},
+            {'label': 'California', 'value': '5'},
+            {'label': 'Colorado', 'value': '6'},
+            {'label': 'Connecticut', 'value': '7'},
+            {'label': 'Delaware', 'value': '8'},
+            {'label': 'District of Columbia', 'value': '9'},
             {'label': 'Florida', 'value': '10'},
             {'label': 'Georgia', 'value': '11'},
             {'label': 'Hawaii', 'value': '12'},
@@ -470,7 +472,7 @@ app.layout = html.Div([
     [dash.dependencies.Input('state-dropdown', 'value')])
 def display_dcurve(value): 
     dff = df[df.state.isin([value])]
-
+    print(value)
     if dff.empty == True:
         return noData()
     else:
