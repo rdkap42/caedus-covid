@@ -363,29 +363,6 @@ def generate_viz(dff):
       dcc.Graph(figure=figure1)
       ]
       ),
-     html.Div([
-      html.H4('Expected Need: Hospital Beds'),
-      html.Div(id='bar-chart1'),
-      dcc.Graph(figure=figure2)
-      ], style={'width': '23%', 'display': 'inline-block'}
-      ),
-     html.Div([
-      html.H4('Expected Need: ICU Beds'),
-      html.Div(id='bar-chart2'),
-      dcc.Graph(figure=figure3)
-      ], style={'width': '23%', 'display': 'inline-block'}),
-     html.Div([
-      html.H4('Expected Need: Ventilators'),
-      html.Div(id='bar-chart3'),
-      dcc.Graph(figure=figure4)
-      ], style={'width': '23%', 'display': 'inline-block'}
-      ),
-     html.Div([
-      html.H4('Expected Need: Personnel'),
-      html.Div(id='bar-chart4'),
-      dcc.Graph(figure=figure5)
-      ], style={'width': '23%', 'display': 'inline-block'}
-      ),
   ])
 
 # App flask config
