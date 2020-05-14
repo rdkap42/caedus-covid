@@ -58,7 +58,6 @@ df = df[['Date', 'State','Cases_Mean', 'Cases_LB', 'Cases_UB', 'Deaths_Mean', 'D
 df.columns = ['date','state','cases_mean', 'cases_lb', 'cases_ub', 'deaths_mean', 'deaths_lb', 
 'deaths_ub', 'total_beds', 'total_ICU_beds', 'total_vents', 'phys_supply']
 
-print(df)
 # function to generate the no data alert message
 def noData():
     return dbc.Alert("We do not have data yet for this state. Please select another state!", color="warning")
@@ -72,6 +71,8 @@ def generate_viz(dff):
         fill= None,
         mode='lines',
         showlegend = False,
+        name = "95% CI cases",
+        legendgroup="group1",
         line=dict(
         color='#FDD663',
         width = 0
@@ -83,6 +84,7 @@ def generate_viz(dff):
         fill='tonexty',
         mode='lines',
         name = "95% CI cases",
+        legendgroup="group1",
         line=dict(
         color='#FDD663',
         width = 0
@@ -93,6 +95,7 @@ def generate_viz(dff):
         y=dff.cases_mean,
         mode='lines+markers',
         name = "mean cases",
+        legendgroup="group1",
         line=dict(
             color='#FBBC04',
         )
@@ -103,6 +106,8 @@ def generate_viz(dff):
         fill= None,
         mode='lines',
         showlegend = False,
+        name = "95% CI deaths",
+        legendgroup="group2",
         line=dict(
         color='#F28B82',
         width = 0
@@ -114,6 +119,7 @@ def generate_viz(dff):
         fill='tonexty',
         mode='lines',
         name = "95% CI deaths",
+        legendgroup="group2",
         line=dict(
         color='#F28B82',
         width = 0
@@ -124,6 +130,7 @@ def generate_viz(dff):
         y=dff.deaths_mean,
         mode='lines+markers',
         name = "mean deaths",
+        legendgroup="group2",
         line=dict(
             color='#EA4335',
         )
@@ -164,6 +171,7 @@ def generate_viz(dff):
         arrowhead=7,
         ax = -30,
         ay = -30,
+        clicktoshow = "onout",
         font=dict(
             size=12
         ),
@@ -358,7 +366,7 @@ def generate_viz(dff):
     figure5 = dict(data=data_personnel, layout =layout_personnel)
     
     return html.Div([html.Div([
-      html.H4('Number of Cases: Statewide'),
+      html.H4('Number of Estimated Cases/Deaths Statewide'),
       html.Div(id='line-chart1'),
       dcc.Graph(figure=figure1)
       ]
