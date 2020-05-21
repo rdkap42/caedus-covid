@@ -402,7 +402,7 @@ def generate_viz(dff):
       html.H4('Estimated Daily Cases Statewide'),
       html.Div(id='line-chart1'),
       dcc.Graph(figure=figure1, config={'displayModeBar': False}),
-      html.H4('Estimated Daily Total Deaths Statewide'),
+      html.H4('Estimated Total Deaths Statewide'),
       dcc.Graph(figure=figure2, config={'displayModeBar': False})
       ]
       ),
