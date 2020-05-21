@@ -15,6 +15,7 @@ from flask import render_template
 import plotly.graph_objs as go
 from plotly.offline import iplot
 import gcsfs
+import locale
 
 """ Retrieve a configuration file for default information """
 fileDir = os.getcwd()  
@@ -49,6 +50,8 @@ data_file = config['default']['default_datafile']
 print(data_file)
 df_all = pd.read_csv(f'{data_file}')
 
+#locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+#TODO https://docs.python.org/3/library/locale.html
 df_all['Date']= pd.to_datetime(df_all['Date'])
 #df_all['State']=df_all['State'].astype('string')
 #df =  df_all[((df_all['Date']) < (today + np.timedelta64(150, 'D'))) & (df_all['State'] == 'MA')]
@@ -73,9 +76,10 @@ def generate_viz(dff):
         showlegend = False,
         name = "95% CI cases",
         legendgroup="group1",
+        yaxis='y1',
         line=dict(
         color='#FDD663',
-        width = 0
+        width = 0,
         )
     )
     upper_cases = go.Scatter(
@@ -94,8 +98,7 @@ def generate_viz(dff):
         x=dff.date,
         y=dff.cases_mean,
         mode='lines+markers',
-        name = "mean cases",
-        legendgroup="group1",
+        name = "mean daily cases",
         line=dict(
             color='#FBBC04',
         )
@@ -107,7 +110,6 @@ def generate_viz(dff):
         mode='lines',
         showlegend = False,
         name = "95% CI deaths",
-        legendgroup="group2",
         line=dict(
         color='#F28B82',
         width = 0
@@ -119,7 +121,6 @@ def generate_viz(dff):
         fill='tonexty',
         mode='lines',
         name = "95% CI deaths",
-        legendgroup="group2",
         line=dict(
         color='#F28B82',
         width = 0
@@ -129,21 +130,22 @@ def generate_viz(dff):
         x=dff.date,
         y=dff.deaths_mean,
         mode='lines+markers',
-        name = "mean deaths",
-        legendgroup="group2",
+        name = "mean total deaths",
         line=dict(
             color='#EA4335',
         )
     )
-    layout_disease = go.Layout(
+    layout_disease_cases = go.Layout(
     xaxis = dict(
         showline=True,
         showgrid=True,
+        fixedrange=True
     ),
     yaxis = dict(
-        title = 'Estimated Total Cases',
+        title = 'Estimated Daily Infections',
         showline=True,
         showgrid=True,
+        fixedrange=True
     ),
     margin=go.layout.Margin(
             l=100, #left margin
@@ -166,19 +168,47 @@ def generate_viz(dff):
         y = dff[dff.date == today]["cases_mean"].values[0],
         xref = "x",
         yref="y",
-        text = str(dff[dff.date == today]["cases_mean"].values[0]) + ' cases today',
+        text = locale.format_string("%d", int(dff[dff.date == today]["cases_mean"].values[0]), grouping=True),
         showarrow = True,
         arrowhead=7,
         ax = -30,
         ay = -30,
-        clicktoshow = "onout",
+        #clicktoshow = "onout",
         font=dict(
             size=12
         ),
         )
     ]
     )
-
+    layout_disease_deaths = go.Layout(
+    xaxis = dict(
+        showline=True,
+        showgrid=True,
+        fixedrange=True
+    ),
+    yaxis = dict(
+        title = 'Estimated Total Deaths',
+        showline=True,
+        showgrid=True,
+        fixedrange=True
+    ),
+    margin=go.layout.Margin(
+            l=100, #left margin
+            r=50, #right margin
+            b=50, #bottom margin
+            t=10, #top margin
+        ),
+    showlegend=True,
+    transition={
+        'duration': 1500,
+        'easing': 'exp',
+        'ordering': 'layout first'
+    },
+    legend=dict(
+        orientation="h"
+    ),
+    )
+    '''
     # ***Hospital Bed Bar Chart***
     today_val = dff[dff.date == today]["cases_mean"].values[0] * coeff_bed
     day5_val = dff[dff.date == days5]["cases_mean"].values[0] * coeff_bed
@@ -357,18 +387,23 @@ def generate_viz(dff):
             t=10, #top margin
         )
     )
-
-    data_disease = [lower_cases, upper_cases, mean_cases, lower_deaths, upper_deaths, mean_deaths]
-    figure1 = dict(data=data_disease, layout =layout_disease)
-    figure2 = dict(data=data_beds, layout =layout_beds)
-    figure3 = dict(data=data_icu, layout =layout_icu)
-    figure4 = dict(data=data_vents, layout =layout_vents)
-    figure5 = dict(data=data_personnel, layout =layout_personnel)
+    '''
+    data_disease_cases = [lower_cases, upper_cases, mean_cases]
+    figure1 = dict(data=data_disease_cases, layout =layout_disease_cases)
+    data_disease_deaths = [lower_deaths, upper_deaths, mean_deaths]
+    figure2 = dict(data=data_disease_deaths, layout=layout_disease_deaths)
+    # Hide all bar chart grpahs
+    #figure3 = dict(data=data_beds, layout =layout_beds)
+    #figure4 = dict(data=data_icu, layout =layout_icu)
+    #figure5 = dict(data=data_vents, layout =layout_vents)
+    #figure6 = dict(data=data_personnel, layout =layout_personnel)
     
     return html.Div([html.Div([
-      html.H4('Number of Estimated Cases/Deaths Statewide'),
+      html.H4('Estimated Daily Cases Statewide'),
       html.Div(id='line-chart1'),
-      dcc.Graph(figure=figure1)
+      dcc.Graph(figure=figure1, config={'displayModeBar': False}),
+      html.H4('Estimated Daily Total Deaths Statewide'),
+      dcc.Graph(figure=figure2, config={'displayModeBar': False})
       ]
       ),
   ])
