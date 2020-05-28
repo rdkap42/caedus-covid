@@ -76,7 +76,6 @@ def generate_viz(dff):
         showlegend = False,
         name = "95% CI cases",
         legendgroup="group1",
-        yaxis='y1',
         line=dict(
         color='#FDD663',
         width = 0,
@@ -138,14 +137,13 @@ def generate_viz(dff):
     layout_disease_cases = go.Layout(
     xaxis = dict(
         showline=True,
-        showgrid=True,
-        fixedrange=True
+        showgrid=True
     ),
     yaxis = dict(
         title = 'Estimated Daily Infections',
         showline=True,
         showgrid=True,
-        fixedrange=True
+        fixedrange=Auto
     ),
     margin=go.layout.Margin(
             l=100, #left margin
@@ -155,9 +153,8 @@ def generate_viz(dff):
         ),
     showlegend=True,
     transition={
-        'duration': 1500,
+        'duration': 1000,
         'easing': 'exp',
-        'ordering': 'layout first'
     },
     legend=dict(
         orientation="h"
@@ -183,14 +180,13 @@ def generate_viz(dff):
     layout_disease_deaths = go.Layout(
     xaxis = dict(
         showline=True,
-        showgrid=True,
-        fixedrange=True
+        showgrid=True
     ),
     yaxis = dict(
         title = 'Estimated Total Deaths',
         showline=True,
         showgrid=True,
-        fixedrange=True
+        fixedrange=Auto
     ),
     margin=go.layout.Margin(
             l=100, #left margin
@@ -200,9 +196,8 @@ def generate_viz(dff):
         ),
     showlegend=True,
     transition={
-        'duration': 1500,
+        'duration': 1000,
         'easing': 'exp',
-        'ordering': 'layout first'
     },
     legend=dict(
         orientation="h"
