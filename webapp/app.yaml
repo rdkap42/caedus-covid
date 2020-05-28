@@ -1,12 +1,11 @@
-runtime: python
-env: flex
+runtime: python37
+#env: flex
 entrypoint: gunicorn -b :$PORT index:server
 
 runtime_config:
   python_version: 3
 
-api_version: 1
-threadsafe: true
+#api_version: 1
 
 manual_scaling:
   instances: 1
@@ -15,12 +14,12 @@ resources:
   memory_gb: 0.5
   disk_size_gb: 10
 
-network:
-  instance_tag: gae
-  name: caeduscovid-sharedservice-vpc
-  subnetwork_name: subnet-us-east1
+#network:
+#  instance_tag: gae
+#  name: caeduscovid-sharedservice-vpc
+#  subnetwork_name: subnet-us-east1
 
 handlers:
 - url: /.*
-  script: index:server
+  script: auto
   secure: always
