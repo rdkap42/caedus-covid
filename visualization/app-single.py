@@ -68,6 +68,7 @@ def noData():
 # function to generates graphs
 def generate_viz(dff):
     # ***Disease Curve Line Chart***
+    '''
     lower_cases = go.Scatter(
         x=dff.date,
         y=dff.cases_lb,
@@ -93,15 +94,17 @@ def generate_viz(dff):
         width = 0
         )
     )
+    '''
     mean_cases = go.Scatter(
         x=dff.date,
         y=dff.cases_mean,
         mode='lines+markers',
-        name = "mean daily cases",
+        name = "daily cases",
         line=dict(
             color='#FBBC04',
         )
     )
+    '''
     lower_deaths = go.Scatter(
         x=dff.date,
         y=dff.deaths_lb,
@@ -125,11 +128,12 @@ def generate_viz(dff):
         width = 0
         )
     )
+    '''
     mean_deaths = go.Scatter(
         x=dff.date,
         y=dff.deaths_mean,
         mode='lines+markers',
-        name = "mean total deaths",
+        name = "total deaths",
         line=dict(
             color='#EA4335',
         )
@@ -142,8 +146,7 @@ def generate_viz(dff):
     yaxis = dict(
         title = 'Estimated Daily Infections',
         showline=True,
-        showgrid=True,
-        fixedrange=Auto
+        showgrid=True
     ),
     margin=go.layout.Margin(
             l=100, #left margin
@@ -185,8 +188,7 @@ def generate_viz(dff):
     yaxis = dict(
         title = 'Estimated Total Deaths',
         showline=True,
-        showgrid=True,
-        fixedrange=Auto
+        showgrid=True
     ),
     margin=go.layout.Margin(
             l=100, #left margin
@@ -383,9 +385,9 @@ def generate_viz(dff):
         )
     )
     '''
-    data_disease_cases = [lower_cases, upper_cases, mean_cases]
+    data_disease_cases = [mean_cases]
     figure1 = dict(data=data_disease_cases, layout =layout_disease_cases)
-    data_disease_deaths = [lower_deaths, upper_deaths, mean_deaths]
+    data_disease_deaths = [mean_deaths]
     figure2 = dict(data=data_disease_deaths, layout=layout_disease_deaths)
     # Hide all bar chart grpahs
     #figure3 = dict(data=data_beds, layout =layout_beds)
