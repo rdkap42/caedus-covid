@@ -30,7 +30,7 @@
     "nuxt": "^2.10.2",
     "nuxt-helmet": "^1.2.1",
     "nuxt-purgecss": "^0.2.1",
-    "pug": "2.0.4",
+    "pug": "3.0.1",
     "redirect-ssl": "^1.4.1",
     "serve-static": "^1.14.1",
     "vue-mq": "^1.0.1",
