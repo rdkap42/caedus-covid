@@ -26,7 +26,7 @@
     "koa": "^2.11.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "nuxt": "^2.10.2",
     "nuxt-helmet": "^1.2.1",
     "nuxt-purgecss": "^0.2.1",
