@@ -30,7 +30,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.1
 jmespath==0.9.5
 MarkupSafe==1.1.1
-numpy==1.18.2
+numpy==1.22.0
 pandas==1.0.3
 paramiko==2.7.1
 plotly==4.5.4
